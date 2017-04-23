@@ -15,8 +15,8 @@ blank -->  [Char], { char:blank(Char) }.
 
 blanks --> blank, blanks1.
 
-blanks1 --> [Char], { char:blank(Char) }, blanks1.
-blanks1 --> [].
+blanks* --> [Char], { char:blank(Char) }, blanks*.
+blanks* --> [].
 
 dotted_words([Word | Words]) -->
   word(Word), ".", dotted_words(Words).
