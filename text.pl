@@ -28,13 +28,16 @@ linebreak(Char) -->
 
 
 % Either 'Before' or 'Chars' must be ground for this to work:
-anything_but([NotAllowed], Chars, Before, [NotAllowed | After]) :-
-  ground(Before), nonvar(NotAllowed),
-  append(Chars, [NotAllowed | After], Before), !.
+anything_but(NotAllowed, Chars, Before, After) :-
+  ground(Before), ground(NotAllowed),
+  append([Chars, NotAllowed, After], Before), !.
 
-anything_but([NotAllowed], Chars, Before, [NotAllowed | After]) :-
-  ground(Chars), nonvar(NotAllowed),
-  append(Chars, [NotAllowed | After], Before).
+anything_but(NotAllowed, Chars, Before, After) :-
+  ground(Chars), ground(NotAllowed),
+  append([Chars, NotAllowed, After1], Before),
+  append([NotAllowed, After1], After),
+  !.
+
 
 anything_but(_, Chars, Chars, []).
   

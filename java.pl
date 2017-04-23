@@ -9,6 +9,5 @@ package_declaration([package, Parts]) -->
 line_comment(Contents) -->
   "//", text:anything_but("\n", Contents), "\n".
 
-
-mutli_comment(Contents) -->
-  "/*", anything_but("*/", Contents).
+multi_comment(Contents) -->
+  "/*", text:anything_but("*/", Contents), "*/".
