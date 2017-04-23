@@ -1,7 +1,7 @@
 :- module(char, []).
 
-upper_alphabet("ABCDEFGHIJKLMNOPQRSTUVXYZ").
-lower_alphabet("abcdefghijklmnopqrstuvxyz").
+upper_alphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ").
+lower_alphabet("abcdefghijklmnopqrstuvwxyz").
 
 numeric_chars("0123456789").
 

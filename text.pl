@@ -13,10 +13,10 @@ digit(Char) --> [Char], { char:digit(Char) }.
 
 blank -->  [Char], { char:blank(Char) }.
 
-blanks --> blank, blanks1.
+blanks --> blank, blanks_star.
 
-blanks* --> [Char], { char:blank(Char) }, blanks*.
-blanks* --> [].
+blanks_star --> [Char], { char:blank(Char) }, blanks_star.
+blanks_star --> [].
 
 dotted_words([Word | Words]) -->
   word(Word), ".", dotted_words(Words).
@@ -41,3 +41,7 @@ anything_but(NotAllowed, Chars, Before, After) :-
 
 anything_but(_, Chars, Chars, []).
   
+rest(_, []).
+
+space --> " ".
+linebreak --> "\n".
