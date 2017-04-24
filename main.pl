@@ -56,9 +56,7 @@ print_it(prolog, AbsFile, [file, Package, Imports, Class]) :-
            write(imports(AQ, AName)),
            format("\n")
          )),
-  !
-  % TODO imports_msg(Qualified, Imports, ImportMsg),
-  .
+  !.
 
 
 file_msg(AbsFile, Qualified, Msg) :-
