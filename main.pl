@@ -7,8 +7,17 @@ qualified([package, Parts], [class, Name | _], Result) :-
 dotified(Parts, Codes) :-
   phrase(text:dotted_words(Parts), Codes).
 
-run_it(Mode) :-
-  atom_codes(Atom, "samples/Hello.java"),
+run_it :- parse("samples/Hello.java", human).
+
+parse_project(ProjectRoot, Mode) :-
+  directory_java_files(ProjectRoot, JavaFiles),
+  forall(member(JavaFile, JavaFiles),
+         parse(JavaFile, Mode)),
+  !.
+
+parse(FileName, Mode) :-
+  atom_codes(Atom, FileName),
+
   absolute_file_name(Atom, AbsFile),
   phrase_from_file(java:file(File), AbsFile),
   print_it(Mode, AbsFile, File),
@@ -57,10 +66,15 @@ class_msg(Qualified, Msg) :-
   append(_, [Name], Qualified),
   append(["The class is called ", Name, "\n"], Msg).
 
-directory_java_files(DirName, AllFiles) :-
-  atom(DirName), atom_codes(DirName, Codes), directory_java_files(Codes, AllFiles).
 
 directory_java_files(DirName, AllFiles) :-
+  directory_java_files2(DirName, AllFiles0),
+  maplist(atom_codes, AllFiles0, AllFiles).
+
+directory_java_files2(DirName, AllFiles) :-
+  atom(DirName), atom_codes(DirName, Codes), directory_java_files2(Codes, AllFiles).
+
+directory_java_files2(DirName, AllFiles) :-
   is_list(DirName),
   
   append(DirName, "/*", Pattern),
@@ -73,7 +87,7 @@ directory_java_files(DirName, AllFiles) :-
   include(exists_file, DirFiles, Files),
   include(is_java_file, Files, JavaFiles),
 
-  maplist(directory_java_files, Dirs, SubDirFiles),
+  maplist(directory_java_files2, Dirs, SubDirFiles),
 
   !,
   append(SubDirFiles, AllSubDirFiles),
