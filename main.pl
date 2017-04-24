@@ -10,8 +10,13 @@ dotified(Parts, Codes) :-
 run_it :- parse("samples/Hello.java", human).
 
 parse_project(ProjectRoot, Mode) :-
-  directory_java_files(ProjectRoot, JavaFiles),
-  forall(member(JavaFile, JavaFiles),
+  parse_big_project([ProjectRoot], Mode).
+
+parse_big_project(ProjectRoots, Mode) :-
+  maplist(directory_java_files, ProjectRoots, JavaFiles),
+  append(JavaFiles, AllJavaFiles),
+  
+  forall(member(JavaFile, AllJavaFiles),
          parse(JavaFile, Mode)),
   !.
 
