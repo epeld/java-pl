@@ -16,7 +16,8 @@ parse_project(ProjectRoot, Mode) :-
   !.
 
 parse(FileName, Mode) :-
-  atom_codes(Atom, FileName),
+  atom(FileName),
+  Atom = FileName,
 
   absolute_file_name(Atom, AbsFile),
   phrase_from_file(java:file(File), AbsFile),
@@ -68,8 +69,8 @@ class_msg(Qualified, Msg) :-
 
 
 directory_java_files(DirName, AllFiles) :-
-  directory_java_files2(DirName, AllFiles0),
-  maplist(atom_codes, AllFiles0, AllFiles).
+  directory_java_files2(DirName, AllFiles).
+  %maplist(atom_codes, AllFiles0, AllFiles).
 
 directory_java_files2(DirName, AllFiles) :-
   atom(DirName), atom_codes(DirName, Codes), directory_java_files2(Codes, AllFiles).
