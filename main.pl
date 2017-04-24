@@ -40,10 +40,23 @@ print_it(human, AbsFile, [file, Package, Imports, Class]) :-
   format(FileMsg),
   format(ImportMsg).
 
-print_it(prolog, AbsFile, [file, Package, _Imports, Class]) :-
+print_it(prolog, AbsFile, [file, Package, Imports, Class]) :-
   qualified(Package, Class, Qualified),
+  dotified(Qualified, Q),
+  atom_codes(AQ, Q),
 
-  write(java_file(AbsFile, Qualified))
+  write(java_file(AbsFile, AQ)),
+  format("\n"),
+
+  forall(member([import, Parts], Imports),
+         (
+           dotified(Parts, Name),
+           atom_codes(AName, Name),
+           
+           write(imports(AQ, AName)),
+           format("\n")
+         )),
+  !
   % TODO imports_msg(Qualified, Imports, ImportMsg),
   .
 
