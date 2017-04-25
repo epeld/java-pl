@@ -25,6 +25,10 @@ depends_on(JavaClass, Dependee) :-
   depends_on(OtherClass, Dependee).
 
 
+% Define a 'dependency-equivalence class' of java classes
+interdepend(JavaClass1, JavaClass2) :- depends_on(JavaClass1, JavaClass2).
+interdepend(JavaClass1, JavaClass2) :- depends_on(JavaClass2, JavaClass1).
+
 imports([pkg1, classA], [pkg1, classB]).
 imports([pkg1, classB], [pkg1, classC]).
 imports([pkg1, classC], [pkg2, classD]).
