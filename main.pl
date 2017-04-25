@@ -4,9 +4,6 @@
 qualified([package, Parts], [class, Name | _], Result) :-
   append(Parts, [Name], Result).
 
-dotified(Parts, Codes) :-
-  phrase(text:dotted_words(Parts), Codes).
-
 run_it :- parse("samples/Hello.java", human).
 
 parse_project(ProjectRoot, Mode) :-
@@ -42,18 +39,23 @@ print_it(human, AbsFile, [file, Package, Imports, Class]) :-
 
 print_it(prolog, AbsFile, [file, Package, Imports, Class]) :-
   qualified(Package, Class, Qualified),
-  dotified(Qualified, Q),
-  atom_codes(AQ, Q),
 
-  write(java_file(AbsFile, AQ)),
+  % Keep AbsFile as an atom on purpose because it is very unlikely
+  % we will need to process the character codes somehow
+
+  % But we retain the classes and packages as codes because
+  % they will contain caps and strange letters (and we might actually
+  % do some parsing of them at some point..)
+
+  write(known_class(Qualified)),
+  format("\n"),
+  
+  write(java_file(AbsFile, Qualified)),
   format("\n"),
 
-  forall(member([import, Parts], Imports),
+  forall(member([import, Importee], Imports),
          (
-           dotified(Parts, Name),
-           atom_codes(AName, Name),
-           
-           write(imports(AQ, AName)),
+           write(imports(Qualified, Importee)),
            format("\n")
          )),
   !.
@@ -61,22 +63,22 @@ print_it(prolog, AbsFile, [file, Package, Imports, Class]) :-
 
 file_msg(AbsFile, Qualified, Msg) :-
   atom_codes(AbsFile, Codes),
-  dotified(Qualified, FullName),
+  text:dotified(Qualified, FullName),
   append([FullName, " is defined in ", Codes, "\n"], Msg).
 
 imports_msg(Qualified, Imports, Msg) :-
-  dotified(Qualified, ClassName),
+  text:dotified(Qualified, ClassName),
   maplist(import_msg(ClassName), Imports, Msgs),
   append(Msgs, Msg).
 
 import_msg(ClassName, [import, Parts], Msg) :-
-  dotified(Parts, ImportS),
+  text:dotified(Parts, ImportS),
   append([ClassName, " imports ", ImportS, "\n"], Msg).
             
 
 package_msg(Qualified, Msg) :-
   append(Parts, [_], Qualified),
-  dotified(Parts, PName),
+  text:dotified(Parts, PName),
   append(["It is defined in package ", PName, "\n"], Msg).
 
 class_msg(Qualified, Msg) :-
@@ -116,3 +118,4 @@ is_dot_dir('..').
 is_dot_dir(X) :- atom_codes(X, [46 | _]). % 46 is '.'
 
 is_java_file(FileName) :- file_name_extension(_, "java", FileName).
+

@@ -18,6 +18,10 @@ blanks --> blank, blanks_star.
 blanks_star --> [Char], { char:blank(Char) }, blanks_star.
 blanks_star --> [].
 
+% util
+dotified(Parts, Codes) :-
+  phrase(text:dotted_words(Parts), Codes).
+
 dotted_words([Word | Words]) -->
   word(Word), ".", dotted_words(Words).
 
