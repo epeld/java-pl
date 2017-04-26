@@ -19,10 +19,8 @@ class_declaration([class, Name, Body, Props]) -->
   { Props = [], Body = [] }.
 
 
-space(Before, After) :-
-  nonvar(Before),
-  !,
-  phrase(text:space, Before, After).
+space([Space | Rest], Rest) :-
+  char:space(Space).
 
 space(Before, After) :-
   nonvar(After),
