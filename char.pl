@@ -28,3 +28,5 @@ linebreak(Char) :-
 
 blank(Char) :-
   member(Char, "\t ").
+
+space(Char) :- [Char] = " ".
