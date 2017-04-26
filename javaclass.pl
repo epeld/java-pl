@@ -16,6 +16,21 @@ block_body_content([ Part ]) -->
   text:anything_but("}", Part).
 
 
+class_member(Member) --> field_declaration(Member).
+class_member(Member) --> method_declaration(Member).
+
+
+field_declaration([field, Names, Type, Finality, Visibility]) -->
+  maybe_visibility(Visibility),
+  maybe_final(Finality),
+  type_specifier(Type),
+  java:space,
+  names(Names).
+
+
+method_declaration([method]) --> []. % TODO
+  
+
 % TODO define top level entries:
 % - members, e.g "private int myint = 3;"
 % - methods, e.g "public void foo() { bla bla }"
@@ -44,7 +59,7 @@ statement(Statement) --> variable_declaration(Statement), ";".
 
 statement(Statement) --> block_statement(Statement).
 
-block_statement([while, Condition, Body]) -->
+block_statement([while, Condition, _Body]) -->
   "while",
   text:blanks_star,
   "(", expression(Condition), ")",
@@ -67,6 +82,8 @@ type_specifier(Word) --> text:word(Word).
 type_specifier([parameterized, Word, Type]) -->
   text:word(Word), "<", type_specifier(Type), ">".
 
+% TODO replace names/1 by something like name_vals/1
+% to reflect the fact that we can assign default values also
 names([Name | Names]) -->
   text:word(Name), text:blanks_star, ",", text:blanks_star, names(Names).
 
