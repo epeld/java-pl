@@ -3,3 +3,4 @@
 :- use_module(java).
 :- use_module(char).
 :- use_module(main).
+:- use_module(javaclass).
