@@ -33,13 +33,8 @@ linebreak(Char) -->
 
 % Either 'Before' or 'Chars' must be ground for this to work:
 anything_but(NotAllowed, Chars, Before, After) :-
-  ground(Before), ground(NotAllowed),
-  append([Chars, NotAllowed, After], Before), !.
-
-anything_but(NotAllowed, Chars, Before, After) :-
-  ground(Chars), ground(NotAllowed),
-  append([Chars, NotAllowed, After1], Before),
-  append([NotAllowed, After1], After),
+  append([Chars, After], Before),
+  append([NotAllowed, _], After),
   !.
 
 
