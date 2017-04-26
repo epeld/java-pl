@@ -11,11 +11,20 @@ word([Char | Chars]) -->
 alpha(Char) --> [Char], { char:alpha(Char) }.
 digit(Char) --> [Char], { char:digit(Char) }.
 
+blank([Space | Rest], Rest) :-
+  char:space(Space),
+  !.
+
 blank -->  [Char], { char:blank(Char) }.
 
 blanks --> blank, blanks_star.
 
-blanks_star --> [Char], { char:blank(Char) }, blanks_star.
+blanks_star(A, B) :-
+  nonvar(B),
+  append(Chars, B, A),
+  maplist(char:blank, Chars).
+
+
 blanks_star --> [].
 
 % util
