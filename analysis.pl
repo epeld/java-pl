@@ -50,5 +50,4 @@ unknown_class(Class) :-
 
 
 dependees_of(JavaClass, Dependees) :-
-  findall(Dependee, depends_on(JavaClass, Dependee), Deps0),
-  list_to_set(Deps0, Dependees).
+  setof(Dependee, depends_on(JavaClass, Dependee), Dependees).
