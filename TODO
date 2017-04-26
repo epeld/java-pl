@@ -1,0 +1,6 @@
+
+* Directions To Go
+
+- Generate JavaClasses from a JSON "spec"
+- Generate parsers (in Java) for JSON objects accroding to spec
+- Parse a JavaClass' method and fields
