@@ -16,20 +16,22 @@ blank([Space | Rest], Rest) :-
 
 blanks --> blank, blanks_star.
 
+% Match any number of blanks when parsing..
 blanks_star(A, B) :-
   nonvar(A),
   append(Chars, B, A),
   maplist(char:blank, Chars).
 
-
-
+% .. but match none when encoding
 blanks_star --> [].
 
+% same as blanks_star except also matches newlines AND ..
 blanks_nl_star(A, B) :-
   nonvar(A),
   append(Chars, B, A),
   maplist(char:whitespace, Chars).
 
+% .. matches newline when encoding
 blanks_nl_star --> "\n".
 
 
@@ -57,6 +59,7 @@ linebreak(Char) -->
   [Char], { char:linebreak }.
 
 
+% NotAllowed should be a (ground) string
 % Either 'Before' or 'Chars' must be ground for this to work:
 anything_but(NotAllowed, Chars, Before, After) :-
   append([Chars, After], Before),
