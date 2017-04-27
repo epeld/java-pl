@@ -1,5 +1,48 @@
 :- module(javaclass, []).
 
+% TODO: type_specifier needs more work..
+% TODO generic parameters
+% public class Foo extends Bar<T> {
+
+%
+% Class Top Level
+%
+class_declaration([ClassType, Name, Attributes, Body, Extends, Implements]) -->
+  {
+    Attributes = [Visibility, Finality, Abstractness]
+  },
+  
+  maybe_visibility(Visibility),
+  maybe_abstract(Abstractness),
+  maybe_final(Finality),
+  
+  class_type(ClassType),
+  java:space,
+  name(Name),
+  
+  extends(Extends),
+  implements(Implements),
+  
+  block_body(Body).
+
+extends(Class) -->
+  "extends", java:space, name(Class).
+
+extends(nothing) --> [].
+
+implements([implements, [Class | Rest]]) -->
+  "implements", java:space, name(Class), class_list(Rest).
+
+implements([implements, []]) --> [].
+
+class_list([]) --> [].
+
+class_list([Class]) -->
+  name(Class).
+
+class_list([Class | Rest]) -->
+  name(Class), ",", java:space, class_list(Rest).
+
 
 block_body([block, Contents]) -->
   "{",
@@ -15,6 +58,18 @@ block_body_content([ Part1, Part2 | Rest ]) -->
 block_body_content([ Part ]) -->
   text:anything_but("}", Part).
 
+%
+% Body
+%
+
+class_body([Member | Members]) -->
+  java:whitespace, class_member(Member),
+  ( { Members = [] }
+  ; class_body(Members) ).
+
+%
+% Members
+%
 
 class_member(Member) -->
   field_declaration(Member).
@@ -61,7 +116,9 @@ method_declaration([method, Name, Type, Args, [Visibility, Statisticity, Finalit
   
   !.
 
-
+%
+% Args
+%
 argument_list(Args) --> "(", arguments(Args), ")".
 
 arguments([]) --> [].
@@ -127,6 +184,9 @@ type_specifier([parameterized, Word, Type]) -->
   text:word(Word), "<", type_specifier(Type), ">".
 
 
+%
+% Primitives
+%
 name(Name) -->
   text:word(Name).
 
@@ -160,6 +220,9 @@ maybe_final(mutable) --> [].
 
 maybe_static(static) --> "static", text:blanks.
 maybe_static(instance) --> [].
+
+maybe_static(abstract) --> "abstract", text:blanks.
+maybe_static(concrete) --> [].
 
 maybe_visibility(public) --> "public", text:blanks.
 maybe_visibility(private) --> "private", text:blanks.
