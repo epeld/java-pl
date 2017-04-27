@@ -25,6 +25,7 @@ blanks_star(A, B) :-
   maplist(char:blank, Chars).
 
 
+
 blanks_star --> [].
 
 blanks_nl_star(A, B) :-
@@ -33,6 +34,18 @@ blanks_nl_star(A, B) :-
   maplist(char:whitespace, Chars).
 
 blanks_nl_star --> "\n".
+
+
+whitespace(A, B) :-
+  % if WRITING, let whitespace produce nothing.
+  var(A),
+  A = B, !.
+
+whitespace(A, B) :-
+  % when parsing, match any whitespace
+  append(Chars, B, A),
+  maplist(char:whitespace, Chars).
+  
 
 % util
 dotified(Parts, Codes) :-
