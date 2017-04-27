@@ -90,8 +90,7 @@ field_declaration([field, NameVals, Type, Attributes]) -->
   
   type_specifier(Type),
   java:space,
-  name_val_pairs(NameVals),
-  !.
+  name_vals(NameVals).
 
 
 method_declaration([method, Name, Type, Args, [Visibility, Statisticity, Finality, Abstractness], Body]) -->
@@ -112,9 +111,7 @@ method_declaration([method, Name, Type, Args, [Visibility, Statisticity, Finalit
   text:blanks_nl_star,
   
   ( block_body(Body)
-  ; ";", { Abstractness = abstract }),
-
-  !.
+  ; ";", { Abstractness = abstract }).
 
 %
 % Args
