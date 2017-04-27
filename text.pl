@@ -12,10 +12,7 @@ alpha(Char) --> [Char], { char:alpha(Char) }.
 digit(Char) --> [Char], { char:digit(Char) }.
 
 blank([Space | Rest], Rest) :-
-  char:space(Space),
-  !.
-
-blank -->  [Char], { char:blank(Char) }.
+  char:space(Space).
 
 blanks --> blank, blanks_star.
 
