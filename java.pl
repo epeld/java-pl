@@ -23,7 +23,7 @@ space([Space | Rest], Rest) :-
   char:space(Space).
 
 space(Before, After) :-
-  nonvar(After),
+  nonvar(Before),
   !,
   phrase(separator, Before, After).
 
