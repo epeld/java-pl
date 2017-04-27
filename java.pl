@@ -19,9 +19,11 @@ class_declaration([class, Name, Body, Props]) -->
   { Props = [], Body = [] }.
 
 
+% Match single space when encoding
 space([Space | Rest], Rest) :-
   char:space(Space).
 
+% .. but match any sequence of at least one blank when parsing
 space(Before, After) :-
   nonvar(Before),
   phrase((text:space, separator), Before, After).
