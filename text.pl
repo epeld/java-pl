@@ -20,12 +20,19 @@ blank -->  [Char], { char:blank(Char) }.
 blanks --> blank, blanks_star.
 
 blanks_star(A, B) :-
-  nonvar(B),
+  nonvar(A),
   append(Chars, B, A),
   maplist(char:blank, Chars).
 
 
 blanks_star --> [].
+
+blanks_nl_star(A, B) :-
+  nonvar(A),
+  append(Chars, B, A),
+  maplist(char:whitespace, Chars).
+
+blanks_nl_star --> "\n".
 
 % util
 dotified(Parts, Codes) :-

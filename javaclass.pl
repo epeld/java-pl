@@ -35,17 +35,23 @@ field_declaration([field, NameVals, Type, Attributes]) -->
   
   type_specifier(Type),
   java:space,
-  name_val_pairs(NameVals).
+  name_val_pairs(NameVals),
+  !.
 
 
-method_declaration([method, Name, Type, Args, Attributes]) -->
+method_declaration([method, Name, Type, Args, Attributes, Body]) -->
   member_attributes(Attributes),
+  
+  % TODO 'abstract?'
   
   type_specifier(Type),
   java:space,
   name(Name),
   text:blanks_star,
-  argument_list(Args).
+  argument_list(Args),
+  text:blanks_nl_star,
+  block_body(Body),
+  !.
 
 
 argument_list(Args) --> "(", arguments(Args), ")".
@@ -146,3 +152,8 @@ maybe_final(mutable) --> [].
 
 maybe_static(static) --> "static", text:blanks.
 maybe_static(instance) --> [].
+
+maybe_visibility(public) --> "public", text:blanks.
+maybe_visibility(private) --> "private", text:blanks.
+maybe_visibility(protected) --> "protected", text:blanks.
+maybe_visibility(package) --> [].
