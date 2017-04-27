@@ -39,18 +39,26 @@ field_declaration([field, NameVals, Type, Attributes]) -->
   !.
 
 
-method_declaration([method, Name, Type, Args, Attributes, Body]) -->
-  member_attributes(Attributes),
+method_declaration([method, Name, Type, Args, [Visibility, Statisticity, Finality, Abstractness], Body]) -->
   
-  % TODO 'abstract?'
+  maybe_visibility(Visibility),
   
+  ( {Abstractness = abstract}, "abstract", java:space
+  ; {Abstractness = concrete }),
+  
+  maybe_static(Statisticity),
+  maybe_final(Finality),
+
   type_specifier(Type),
   java:space,
   name(Name),
   text:blanks_star,
   argument_list(Args),
   text:blanks_nl_star,
-  block_body(Body),
+  
+  ( block_body(Body)
+  ; ";", { Abstractness = abstract }),
+  
   !.
 
 
