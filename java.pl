@@ -24,16 +24,17 @@ space([Space | Rest], Rest) :-
 
 space(Before, After) :-
   nonvar(Before),
-  !,
-  phrase(separator, Before, After).
-
-linebreak(Before, After) :-
-  nonvar(After), 
-  !, phrase(text:linebreak, Before, After).
+  phrase((text:space, separator), Before, After).
 
 linebreak(Before, After) :-
   nonvar(Before), 
-  !, phrase(separator, Before, After).
+  !,
+  phrase(text:linebreak, Before, After).
+
+linebreak(Before, After) :-
+  nonvar(Before), 
+  !,
+  phrase(separator, Before, After).
 
 separator -->
   ( text:blanks ; text:linebreak ; multi_comment(_) ; line_comment(_)),
