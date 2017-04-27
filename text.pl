@@ -23,7 +23,9 @@ blanks_star(A, B) :-
   maplist(char:blank, Chars).
 
 % .. but match none when encoding
-blanks_star --> [].
+blanks_star(A, B) :-
+  var(A),
+  A = B.
 
 % same as blanks_star except also matches newlines AND ..
 blanks_nl_star(A, B) :-
