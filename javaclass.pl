@@ -26,7 +26,7 @@ class_declaration([ClassType, Name, Attributes, Body, Extends, Implements]) -->
   block_body(Body).
 
 extends(Class) -->
-  "extends", java:space, name(Class).
+  "extends", java:space, maybe_parameterized(Class).
 
 extends(nothing) --> [].
 
@@ -113,7 +113,7 @@ method_declaration([method, Name, Type, Args, [Visibility, Statisticity, Finalit
   
   ( block_body(Body)
   ; ";", { Abstractness = abstract }),
-  
+
   !.
 
 %
@@ -179,9 +179,7 @@ variable_declaration([var_declaration, NameVals, Type, Finality]) -->
   ";".
 
 
-type_specifier(Word) --> text:word(Word).
-type_specifier([parameterized, Word, Type]) -->
-  text:word(Word), "<", type_specifier(Type), ">".
+type_specifier(Word) --> maybe_parameterized(Word).
 
 
 %
@@ -228,3 +226,14 @@ maybe_visibility(public) --> "public", text:blanks.
 maybe_visibility(private) --> "private", text:blanks.
 maybe_visibility(protected) --> "protected", text:blanks.
 maybe_visibility(package) --> [].
+
+maybe_parameterized(Something) --> name(Something).
+maybe_parameterized([parameterized, Something, Params]) -->
+  name(Something), "<", generics(Params), ">".
+
+
+generics([Param]) -->
+  maybe_parameterized(Param).
+
+generics([Param, Params2 | Params]) -->
+  maybe_parameterized(Param), ",", text:blanks_star, generics([Params2 | Params]).
