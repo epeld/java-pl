@@ -201,6 +201,8 @@ name_val([Name, default]) -->
 name_val([Name, Value]) -->
   name(Name),
   java:space,
+  "=",
+  java:space,
   expression(Value).
 
 
