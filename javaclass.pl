@@ -16,19 +16,50 @@ block_body_content([ Part ]) -->
   text:anything_but("}", Part).
 
 
-class_member(Member) --> field_declaration(Member).
-class_member(Member) --> method_declaration(Member).
+class_member(Member) -->
+  field_declaration(Member).
+
+class_member(Member) -->
+  method_declaration(Member).
 
 
-field_declaration([field, Names, Type, Finality, Visibility]) -->
+% Member attributes are my made up name for the combo of visibility, statisticity, and mutability
+member_attributes([Visibility, Statisticity, Finality]) -->
   maybe_visibility(Visibility),
+  maybe_static(Statisticity),
+  maybe_final(Finality).
+
+
+field_declaration([field, NameVals, Type, Attributes]) -->
+  member_attributes(Attributes),
+  
+  type_specifier(Type),
+  java:space,
+  name_val_pairs(NameVals).
+
+
+method_declaration([method, Name, Type, Args, Attributes]) -->
+  member_attributes(Attributes),
+  
+  type_specifier(Type),
+  java:space,
+  name(Name),
+  text:blanks_star,
+  argument_list(Args).
+
+
+argument_list(Args) --> "(", arguments(Args), ")".
+
+arguments([]) --> [].
+arguments([Arg1]) --> argument(Arg1).
+arguments([Arg1, Arg2 | Args]) --> argument(Arg1), ",", arguments([Arg2 | Args]).
+
+
+argument([arg, Name, Type, Finality]) -->
   maybe_final(Finality),
   type_specifier(Type),
   java:space,
-  names(Names).
-
-
-method_declaration([method]) --> []. % TODO
+  name(Name).
   
 
 % TODO define top level entries:
@@ -68,13 +99,12 @@ block_statement([while, Condition, _Body]) -->
   % TODO define inner body
   "}".
 
-variable_declaration([var_declaration, Names, Type, Finality]) -->
+variable_declaration([var_declaration, NameVals, Type, Finality]) -->
   maybe_final(Finality),
   type_specifier(Type),
   java:space,
-  names(Names),
+  name_vals(NameVals),
   text:blanks_star,
-  % TODO there might be default assignments here somewhere!
   ";".
 
 
@@ -82,13 +112,37 @@ type_specifier(Word) --> text:word(Word).
 type_specifier([parameterized, Word, Type]) -->
   text:word(Word), "<", type_specifier(Type), ">".
 
-% TODO replace names/1 by something like name_vals/1
-% to reflect the fact that we can assign default values also
-names([Name | Names]) -->
-  text:word(Name), text:blanks_star, ",", text:blanks_star, names(Names).
 
-names([Name]) --> text:word(Name).
+name(Name) -->
+  text:word(Name).
+
+
+names([Name | Names]) -->
+  name(Name), text:blanks_star, ",", text:blanks_star, names(Names).
+
+names([Name]) --> name(Name).
+
+
+name_val([Name, default]) -->
+  name(Name).
+
+name_val([Name, Value]) -->
+  name(Name),
+  java:space,
+  expression(Value).
+
+
+name_vals([NameVal, NameVal2 | Rest]) -->
+  name_val(NameVal),
+  ",", java:space,
+  name_vals([NameVal2 | Rest]).
+
+name_vals([NameVal]) -->
+  name_val(NameVal).
+
 
 maybe_final(final) --> "final", text:blanks.
 maybe_final(mutable) --> [].
 
+maybe_static(static) --> "static", text:blanks.
+maybe_static(instance) --> [].
